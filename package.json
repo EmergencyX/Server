@@ -1,0 +1,22 @@
+{
+  "name": "emergencyexplorerserver",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmergencyX/Server.git"
+  },
+  "author": "Emergency X",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EmergencyX/Server/issues"
+  },
+  "homepage": "https://github.com/EmergencyX/Server#readme",
+  "dependencies": {
+    "grpc": "^0.13.0"
+  }
+}
