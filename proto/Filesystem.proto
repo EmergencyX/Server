@@ -1,0 +1,10 @@
+message Directory {
+  required string name = 1;
+
+  repeated Directory children = 2;
+  repeated File files = 3;
+}
+
+message File {
+  required string guid = 1;
+}

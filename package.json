@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/EmergencyX/Server#readme",
   "dependencies": {
-    "grpc": "^0.13.0"
+    "grpc": "^0.13.0",
+    "iltorb": "^1.0.9"
   }
 }
