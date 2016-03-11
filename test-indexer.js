@@ -5,49 +5,29 @@ const crypto = require('crypto');
 
 const config = {
 	bufferSize: 4096,
-	testDirectory: 'profile_pictures'
+	testDirectory: 'test-indexer'
 }
 
-function indexDirectory (directory) {
+function indexDirectory (directory, name) {
+	var directories = [];
+	var files = [];
 	fs.readdirSync(directory).forEach(function(entry) {
 		try	{
 			var fullpath = path.join(directory, entry);
 			var fileinfo = fs.statSync(fullpath);
 			if (fileinfo.isFile())	{
-				indexFile(fullpath);
+				files.push(indexFile(fullpath, entry));
 			} else if(fileinfo.isDirectory()) {
-				indexDirectory(fullpath);
+				directories.push(indexDirectory(fullpath, entry));
 			}		
 		} catch (err) {
 			console.log(err);
 		}
 	});
+	return {name, directories, files};
 }
 
-
-var files = new Set();
-var struct = Object.create(null);
-struct.files = [];
-function insertFileElement (file, hash) {
-	files.add(hash);
-
-	var dirinfo = path.parse(file);
-	var dirtree = path.relative(config.testDirectory, dirinfo.dir).split(path.sep).filter(directory => directory.trim() !== '');
-
-	var object = struct;
-	dirtree.forEach(directory => {
-			if (object[directory]) {
-				object = object[directory];
-			} else {
-				object[directory] = {files:[]};
-			}
-		}
-	);
-	
-	object.files.push({name: dirinfo.base, guid: hash});
-}
-
-function indexFile (file) {
+function indexFile (file, name) {
 	const buffer = new Buffer(config.bufferSize);
 	const hash = crypto.createHash('sha1');
 	const fd = fs.openSync(file, 'r');
@@ -57,21 +37,10 @@ function indexFile (file) {
 		hash.update(buffer.slice(0, toRead));
 	}
 
-	insertFileElement(file, hash.digest('hex'))
+	const guid = hash.digest('hex');
+	return {name, guid};
 }
 
-indexDirectory(config.testDirectory);
-
-
+const struct = indexDirectory(config.testDirectory, 'ROOT');
 console.dir(struct, {depth:16, colors:true});
-console.log(files.size);
-
-/*
-Generate a tree structure from a directory
-{
-	files: [{name: 'name', guid: 'guid'}],
-}
-
-
-
-*/
+//console.log(files.size);
