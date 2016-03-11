@@ -1,10 +1,11 @@
 {
   "name": "emergencyexplorerserver",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Server für EmergencyX",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node --harmony --use_strict main.js"
   },
   "repository": {
     "type": "git",
