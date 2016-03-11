@@ -1,12 +1,19 @@
 syntax = "proto3";
 
+message Release {
+  required int mod_id = 1;
+  required int repository_id = 2;
+  required string name = 3;
+}
+
 message Directory {
   required string name = 1;
 
-  repeated Directory children = 2;
+  repeated Directory directories = 2;
   repeated File files = 3;
 }
 
 message File {
-  required string guid = 1;
+  required string name = 1;
+  required string guid = 2;
 }

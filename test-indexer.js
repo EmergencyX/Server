@@ -5,7 +5,12 @@ const crypto = require('crypto');
 
 const config = {
 	bufferSize: 4096,
-	testDirectory: 'test-indexer'
+	testDirectory: '.'
+}
+
+var count = {
+	directories: 0,
+	files: 0,
 }
 
 function indexDirectory (directory, name) {
@@ -24,6 +29,7 @@ function indexDirectory (directory, name) {
 			console.log(err);
 		}
 	});
+	count.directories++;
 	return {name, directories, files};
 }
 
@@ -38,9 +44,12 @@ function indexFile (file, name) {
 	}
 
 	const guid = hash.digest('hex');
+	count.files++;
 	return {name, guid};
 }
-
+console.time('generate-structure');
 const struct = indexDirectory(config.testDirectory, 'ROOT');
-console.dir(struct, {depth:16, colors:true});
+//console.dir(struct, {depth:16, colors:true}); //this affects timing but otherwise the timestamp will be hidden
+console.timeEnd('generate-structure');
+console.dir(count, {colors:true});
 //console.log(files.size);
