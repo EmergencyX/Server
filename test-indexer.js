@@ -42,6 +42,7 @@ function indexFile (file, name) {
 	while (0!==(toRead =fs.readSync(fd, buffer, 0, config.bufferSize))) {
 		hash.update(buffer.slice(0, toRead));
 	}
+	fs.closeSync(fd);
 
 	const guid = hash.digest('hex');
 	count.files++;
