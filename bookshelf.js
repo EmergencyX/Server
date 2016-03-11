@@ -13,14 +13,14 @@ const bookshelf = require('bookshelf')(knex);
 const User = bookshelf.Model.extend({
   tableName: 'users',
   projects: function() {
-    return this.belongsToMany(Project);
+    return this.belongsToMany(Project, 'project_user').withPivot(['role']);
   }
 });
 
 const Project = bookshelf.Model.extend({
   tableName: 'projects',
   users: function() {
-    return this.belongsToMany(User);
+    return this.belongsToMany(User, 'project_user').withPivot(['role']);
   }
 });
 
