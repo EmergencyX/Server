@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "node --harmony --use_strict main.js"
+    "start": "node --harmony --use_strict main.js"
   },
   "repository": {
     "type": "git",
