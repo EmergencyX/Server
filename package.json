@@ -17,7 +17,12 @@
   },
   "homepage": "https://github.com/EmergencyX/Server#readme",
   "dependencies": {
+    "bookshelf": "^0.9.2",
     "grpc": "^0.13.0",
-    "iltorb": "^1.0.9"
+    "iltorb": "^1.0.9",
+    "ioredis": "^1.15.1",
+    "knex": "^0.10.0",
+    "lodash": "^4.6.1",
+    "mysql": "^2.10.2"
   }
 }
