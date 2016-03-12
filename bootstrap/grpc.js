@@ -1,5 +1,6 @@
 const grpc = require('grpc');
 const proto = grpc.load('proto/explorer-server.proto');
+const fs = require('fs');
 
 function login(call, callback) {
 	console.log('got ', call);
@@ -15,7 +16,15 @@ function getServer() {
 module.exports = {
 	run(endpoint) {
 		var server = getServer();
-		server.bind(endpoint, grpc.ServerCredentials.createSsl());
+		var key_data = fs.readFileSync('server.key');
+		var crt_data = fs.readFileSync('server.crt');
+        var sslCreds = grpc.ServerCredentials.createSsl(null,
+                                                   [{private_key: key_data,
+                                                     cert_chain: crt_data}]);
+		
+		
+		console.log(sslCreds);
+		server.bind(endpoint, sslCreds);
 		server.start();
 		return server;
 	},
