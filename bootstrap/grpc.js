@@ -1,15 +1,11 @@
 const grpc = require('grpc');
 const proto = grpc.load('proto/explorer-server.proto');
+const rpc = require('../rpc/explorer-server');
 const fs = require('fs');
-
-function login(call, callback) {
-	console.log('got ', call);
-	callback(null, {success: false, user_id: 0});
-}
 
 function getServer() {
 	const server = new grpc.Server();
-	server.addProtoService(proto.EmergencyExplorerService.service, { login });
+	server.addProtoService(proto.EmergencyExplorerService.service, rpc);
 	return server;
 }
 
