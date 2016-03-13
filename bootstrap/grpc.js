@@ -8,23 +8,22 @@ function login(call, callback) {
 }
 
 function getServer() {
-	var server = new grpc.Server();
+	const server = new grpc.Server();
 	server.addProtoService(proto.EmergencyExplorerService.service, { login });
 	return server;
 }
 
+function getSslCredentials() {
+    return grpc.ServerCredentials.createSsl(null, [{
+        private_key: fs.readFileSync('server.key'), 
+        cert_chain: fs.readFileSync('server.crt')
+    }]);
+}
+
 module.exports = {
 	run(endpoint) {
-		var server = getServer();
-		var key_data = fs.readFileSync('server.key');
-		var crt_data = fs.readFileSync('server.crt');
-        var sslCreds = grpc.ServerCredentials.createSsl(null,
-                                                   [{private_key: key_data,
-                                                     cert_chain: crt_data}]);
-		
-		
-		console.log(sslCreds);
-		server.bind(endpoint, sslCreds);
+		const server = getServer();
+		server.bind(endpoint, getSslCredentials());
 		server.start();
 		return server;
 	},
