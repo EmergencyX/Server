@@ -1,3 +1,8 @@
 # Server
 Achtung, ES Features bei der Ausführung aktivieren!
-`node test-indexer.js --harmony`
+`node main.js --harmony`
+
+## Installation
+```cp .env.example .env```
+Umgebungsvariablen konfigurieren
+
