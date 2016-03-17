@@ -8,6 +8,12 @@ var client = new proto.EmergencyExplorerService('localhost:50051',
     grpc.credentials.createSsl(fs.readFileSync('server.crt'))
 );
 client.login({username: process.env.TEST_USERNAME, password: process.env.TEST_PASSWORD}, function(err, response) {
-    console.log(response);
-    console.log(err);
+    console.log('login#remember_me=false', response);
+});
+
+client.login({username: process.env.TEST_USERNAME, password: process.env.TEST_PASSWORD, remember_me: true}, function(err, response) {
+    console.log('login#remember_me=true', response);
+    client.loginWithToken({user_id: response.user_id, token: response.token}, function(err, response) {
+        console.log('loginWithToken', response);
+    });
 });
