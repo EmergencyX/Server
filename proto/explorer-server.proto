@@ -19,7 +19,29 @@ message LoginResponse {
 	string token = 3;
 }
 
+message ProjectListRequest {
+    enum Category {
+        UNIVERSAL = 0;
+        RECENT = 1;
+    }
+	Category category = 1;
+	uint32 offset = 2;
+	uint32 limit = 3;
+}
+
+message Project {
+    uint32 id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message ProjectListResponse {
+    repeated Project projects = 1;
+}
+
 service EmergencyExplorerService {
 	rpc Login (LoginRequest) returns (LoginResponse);
 	rpc LoginWithToken (LoginWithTokenRequest) returns (LoginResponse);
+
+	rpc ProjectList (ProjectListRequest) returns (ProjectListResponse);
 }
