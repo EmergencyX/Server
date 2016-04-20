@@ -7,6 +7,7 @@ const proto = grpc.load('proto/explorer-server.proto');
 
 module.exports = {
     login(call, callback) {
+        console.log(call);
         orm.User.where('name', call.request.username).fetch({required: true}).then(function (user) {
             let success = bcrypt.compareSync(call.request.password, user.get('password'));
 

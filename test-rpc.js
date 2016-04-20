@@ -6,8 +6,20 @@ const grpc = require('grpc');
 const proto = grpc.load('proto/explorer-server.proto');
 const fs = require('fs');
 
+
+function getMetaGeneratorCredentials() {
+    return grpc.credentials.createFromMetadataGenerator(function (auth_context, callback) {
+        "use strict";
+        console.log(auth_context);
+        var metadata = new grpc.Metadata();
+        metadata.add('authorization', "hello world");
+        callback(null, metadata);
+    });
+}
+
+
 var client = new proto.EmergencyExplorerService('beta.emergencyx.de:50051',
-    grpc.credentials.createSsl(fs.readFileSync('server.crt'))
+    grpc.credentials.combineChannelCredentials(grpc.credentials.createSsl(fs.readFileSync('server.crt')), getMetaGeneratorCredentials())
 );
 client.login({username: process.env.TEST_USERNAME, password: process.env.TEST_PASSWORD}, function(err, response) {
     console.log('login#remember_me=false', response);
