@@ -7,18 +7,21 @@ const proto = grpc.load('proto/explorer-server.proto');
 
 module.exports = {
     login(call, callback) {
-        console.log(call);
+        console.log(call.request);
         orm.User.where('name', call.request.username).fetch({required: true}).then(function (user) {
             let success = bcrypt.compareSync(call.request.password, user.get('password'));
 
             let token;
             if (success && call.request.remember_me) {
-                token = cipher.encrypt(JSON.stringify({user_id: user.id, token: user.get('remember_token')}));
+                let data = JSON.stringify({user_id: user.id, token: user.get('remember_token')});
+                console.log(data)
+                token = cipher.encrypt(data);
+                console.log(token);
             }
 
             callback(null, {success, user_id: success ? user.id : 0, token});
         }).catch(function (err) {
-            console.log(err);
+            throw err;
             callback(null, {success: false, user_id: 0});
         });
     },
