@@ -21,6 +21,8 @@ function getMetaGeneratorCredentials() {
 var client = new proto.EmergencyExplorerService('beta.emergencyx.de:50051',
     grpc.credentials.combineChannelCredentials(grpc.credentials.createSsl(fs.readFileSync('server.crt')), getMetaGeneratorCredentials())
 );
+
+
 client.login({username: process.env.TEST_USERNAME, password: process.env.TEST_PASSWORD}, function(err, response) {
     console.log('login#remember_me=false', response);
 });
