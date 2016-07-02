@@ -1,4 +1,5 @@
 'use strict';
+const logger = require('../bootstrap/logger');
 const orm = require('../bootstrap/bookshelf');
 const bcrypt = require('twin-bcrypt');
 const cipher = require('../lib/cipher');
@@ -7,22 +8,23 @@ const proto = grpc.load('proto/explorer-server.proto');
 
 module.exports = {
     login(call, callback) {
-        console.log(call.request);
+        logger.debug(call.request);
         orm.User.where('name', call.request.username).fetch({required: true}).then(function (user) {
             let success = bcrypt.compareSync(call.request.password, user.get('password'));
 
             let token;
             if (success && call.request.remember_me) {
                 let data = JSON.stringify({user_id: user.id, token: user.get('remember_token')});
-                console.log(data)
+                logger.debug(data);
                 token = cipher.encrypt(data);
-                console.log(token);
+                logger.debug(token);
             }
 
             callback(null, {success, user_id: success ? user.id : 0, token});
         }).catch(function (err) {
-            throw err;
+            logger.error(err.message);
             callback(null, {success: false, user_id: 0});
+            throw err;
         });
     },
     loginWithToken(call, callback) {
@@ -32,7 +34,7 @@ module.exports = {
 
             callback(null, {success, user_id: success ? user.id : 0});
         }).catch(function (err) {
-            console.log(err);
+            logger.log(err);
             callback(null, {success: false, user_id: 0});
         });
     },
@@ -45,7 +47,7 @@ module.exports = {
         if (limit < 1 || limit > 20) {
             limit = 20;
         }
-        
+
         orm.Project
             .query(function (builder) {
                 builder.offset(offset).limit(limit);
