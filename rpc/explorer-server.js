@@ -6,6 +6,8 @@ const cipher = require('../lib/cipher');
 const grpc = require('grpc');
 const proto = grpc.load('proto/explorer-server.proto');
 
+const mediaRepository = require('../repositories/media');
+
 module.exports = {
     login(call, callback) {
         logger.debug(call.request);
@@ -52,15 +54,30 @@ module.exports = {
             .query(function (builder) {
                 builder.offset(offset).limit(limit);
             })
-            .fetchAll()
+            .fetchAll({withRelated: ['users']})
             .then(function (result) {
                 callback(null, {
                     projects: result.map(project => {
+                        logger.debug(project.toJSON());
                         return {
                             id: project.get('id'),
                             name: project.get('name'),
-                            description: project.get('description')
-                        }
+                            description: project.get('description'),
+                            users: project.related('users').map(user => {
+                                return {
+                                    id: user.get('id'),
+                                    name: user.get('name')
+                                }
+                            })
+                            /*users: project.related('users').map(user => {
+                             logger.debug(user);
+                             return {
+                             id: user.get('id'),
+                             name: user.get('name'),
+                             role: user.get('_pivot_role')
+                             };
+                             })*/
+                        };
                     })
                 });
             });
@@ -82,6 +99,20 @@ module.exports = {
          callback(null, {success: false, user_id: 0});
          });
          */
-    }
+    },
+    getMedia(call, callback) {
+        orm.Media.where('id', call.request.id).fetch({required: true}).then(function (media) {
+            logger.debug('request', call.request);
 
+            let content = mediaRepository.getMediaContent(media, call.request.size);
+            logger.debug('content', content);
+            callback(null, {
+                id: call.request.id,
+                content
+            });
+        }).catch(function (err) {
+            logger.log(err);
+            callback(err, {});
+        });
+    }
 };
